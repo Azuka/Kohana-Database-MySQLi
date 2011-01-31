@@ -115,7 +115,7 @@ class Kohana_Database_MySQLi extends Database {
 	{
 		// Make sure the database is connected
 		$this->_connection or $this->connect();
-        
+
         $status = $this->_connection->set_charset($charset);
 
 		if ($status === FALSE)
@@ -126,7 +126,7 @@ class Kohana_Database_MySQLi extends Database {
 		}
 	}
 
-	public function query($type, $sql, $as_object)
+	public function query($type, $sql, $as_object = FALSE, array $params = NULL)
 	{
 		// Make sure the database is connected
 		$this->_connection or $this->connect();
@@ -168,7 +168,7 @@ class Kohana_Database_MySQLi extends Database {
 		if ($type === Database::SELECT)
 		{
 			// Return an iterator of results
-			return new Database_MySQLi_Result($result, $sql, $as_object);
+			return new Database_MySQLi_Result($result, $sql, $as_object, $params);
 		}
 		elseif ($type === Database::INSERT)
 		{
@@ -254,10 +254,10 @@ class Kohana_Database_MySQLi extends Database {
 		return $tables;
 	}
 
-	public function list_columns($table, $like = NULL)
+	public function list_columns($table, $like = NULL, $add_prefix = TRUE)
 	{
 		// Quote the table name
-		$table = $this->quote_table($table);
+		$table = ($add_prefix === TRUE) ? $this->quote_table($table) : $table;
 
 		if (is_string($like))
 		{
