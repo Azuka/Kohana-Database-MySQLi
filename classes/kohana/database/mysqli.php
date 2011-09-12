@@ -62,10 +62,10 @@ class Kohana_Database_MySQLi extends Database {
 		}
 		catch (ErrorException $e)
 		{
-			throw new Database_Exception($this->_connection->connect_errno, '[:code] :error', array(
+			throw new Database_Exception('[:code] :error', array(
 					':code' => $this->_connection->connect_errno,
 					':error' => $this->_connection->connect_error,
-				));
+				), $this->_connection->connect_errno);
 
 			// No connection exists
 			$this->_connection = NULL;
@@ -94,10 +94,10 @@ class Kohana_Database_MySQLi extends Database {
 		if ( ! $this->_connection->select_db($database))
 		{
 			// Unable to select database
-			throw new Database_Exception($this->_connection->errno, '[:code] :error', array(
+			throw new Database_Exception('[:code] :error', array(
 				':code' => $this->_connection->errno,
 				':error' => $this->_connection->error,
-			));
+			), $this->_connection->errno);
 		}
 
 		Database_MySQLi::$_current_databases[$this->_connection_id] = $database;
@@ -146,10 +146,10 @@ class Kohana_Database_MySQLi extends Database {
 
 		if ($status === FALSE)
 		{
-			throw new Database_Exception($this->_connection->errno, '[:code] :error', array(
+			throw new Database_Exception('[:code] :error', array(
 				':code' => $this->_connection->errno,
 				':error' => $this->_connection->error,
-			));
+			), $this->_connection->errno);
 		}
 	}
 
@@ -179,11 +179,11 @@ class Kohana_Database_MySQLi extends Database {
 				Profiler::delete($benchmark);
 			}
 
-			throw new Database_Exception($this->_connection->errno, '[:code] :error ( :query )', array(
+			throw new Database_Exception('[:code] :error ( :query )', array(
 				':code' => $this->_connection->errno,
 				':error' => $this->_connection->error,
 				':query' => $sql,
-			));
+			), $this->_connection->errno);
 		}
 
 		if (isset($benchmark))
@@ -276,7 +276,7 @@ class Kohana_Database_MySQLi extends Database {
 
 		if ($mode AND ! $this->_connection->query("SET TRANSACTION ISOLATION LEVEL $mode"))
 		{
-			throw new Database_Exception($this->_connection->errno, ':error', array(':error' => $this->_connection->error),
+			throw new Database_Exception(':error', array(':error' => $this->_connection->error),
 										 $this->_connection->errno);
 		}
 
@@ -422,10 +422,10 @@ class Kohana_Database_MySQLi extends Database {
 
 		if (($value = $this->_connection->real_escape_string((string) $value)) === FALSE)
 		{
-			throw new Database_Exception($this->_connection->errno, '[:code] :error', array(
+			throw new Database_Exception('[:code] :error', array(
 				':code' => $this->_connection->errno,
 				':error' => $this->_connection->error,
-			));
+			), $this->_connection->errno);
 		}
 
 		// SQL standard is to use single-quotes for all values
