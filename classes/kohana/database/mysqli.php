@@ -4,7 +4,8 @@
  *
  * @package    Kohana/Database
  * @category   Drivers
- * @author     Austin Bischoff et al.
+ * @author     Azuka Okuleye
+ * @author     Austin Bischoff
  * @license    http://kohanaphp.com/license
  */
 class Kohana_Database_MySQLi extends Database {
@@ -45,7 +46,7 @@ class Kohana_Database_MySQLi extends Database {
 		));
 
 		// Prevent this information from showing up in traces
-		unset($this->_config['connection']['username'], $this->_config['connection']['password']);
+		//unset($this->_config['connection']['username'], $this->_config['connection']['password']);
 
 		try
 		{
@@ -110,7 +111,7 @@ class Kohana_Database_MySQLi extends Database {
 			// Database is assumed disconnected
 			$status = TRUE;
 
-			if (is_resource($this->_connection))
+			if ($this->_connection instanceof mysqli)
 			{
 				if ($status = $this->_connection->close())
 				{
@@ -118,11 +119,13 @@ class Kohana_Database_MySQLi extends Database {
 					$this->_connection = NULL;
 				}
 			}
+
+			parent::disconnect();
 		}
 		catch (Exception $e)
 		{
 			// Database is probably not disconnected
-			$status = ! is_resource($this->_connection);
+			$status = ! ($this->_connection instanceof mysqli);
 		}
 
 		return $status;
